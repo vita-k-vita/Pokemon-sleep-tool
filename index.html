@@ -156,6 +156,14 @@ main > [role="tablist"] { margin: 0 0 18px; }
 #splitResult{font-weight:700;margin-block:8px}
 @media(max-width:740px){.ranking-panel{padding:12px}.rank-metric{min-height:34px}}
 
+.individual-metrics{clear:both;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;max-width:460px;padding-top:12px}
+.individual-metrics button{padding:5px 2px;min-height:34px;border:1px solid #ffffff40;border-radius:6px;background:#ffffff0d;color:#fff;font-size:clamp(10px,3vw,13px);white-space:nowrap}
+.individual-metrics button[aria-pressed=true]{background:#e4ce95;border-color:#e4ce95;color:#203b40;font-weight:700}
+.individual-expected{margin-top:7px;font-variant-numeric:tabular-nums}
+.individual-expected strong{font-size:24px;line-height:1.15}
+.individual-expected span{font-size:11px;color:#b9ceca}
+.individual-expected+.rank-overview{margin-top:8px}
+
 .party-heading { margin-bottom: 14px; }
 .party-layout { display: grid; grid-template-columns: minmax(0, 390px) minmax(0, 1fr); gap: 14px; align-items: start; }
 .party-inputs, .party-results { padding: 16px; }
@@ -216,6 +224,13 @@ main > [role="tablist"] { margin: 0 0 18px; }
 <div class="results">
 <section class="panel selection" aria-label="選択した個体の評価" aria-live="polite">
 <img id="pokemonPortrait" alt="" style="float:right;width:110px;height:110px;object-fit:contain;margin:0 0 10px 15px;background:#ffffff12;border-radius:16px"><div class="selection-head"><div><div class="eyebrow">YOUR SELECTED BUILD</div><h2 id="selectedName"></h2></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px"><span class="chip" id="selectedSpecialty" style="background:#e4ce95;color:#203b40;font-weight:700"></span><span class="chip" id="selectedMetric"></span></div></div><div class="selected-chips" id="selectedChips"></div>
+<div class="individual-metrics" role="group" aria-label="個体の表示項目">
+<button type="button" data-metric="energy">総エナジー</button>
+<button type="button" data-metric="direct" aria-label="通常収集の食材数">食材数</button>
+<button type="button" data-metric="skill">スキル発動</button>
+<button type="button" data-metric="berries">きのみ数</button>
+</div>
+<div class="individual-expected"><strong id="individualValue">—</strong> <span id="individualUnit"></span></div>
 <div class="rank-overview"><div><span class="big-rank" id="rank">—</span> <small id="population"></small></div><div><small>上位 </small><strong id="percentile">—</strong></div><div><small>偏差値 </small><strong id="deviation">—</strong></div></div>
 <div class="rank-track"><span id="rankFill"></span></div><div class="rank-caption"><span>比較母集団の下位</span><span>上位</span></div><div class="notice" id="tieInfo"></div>
 </section>
@@ -523,7 +538,10 @@ function update(){
  $('selectedSpecialty').textContent=specialtyNames[p.specialty]+'とくい';
  syncNatureTrigger();
  $('selectedName').textContent=`${p.name} · Lv.${state.level} / ${n.name}`;
- $('selectedMetric').textContent=metrics[state.metric];
+ const metric=state.metric;
+ $('selectedMetric').textContent=metrics[metric];
+ $('individualValue').textContent=metric==='energy'?integer(Math.round(selected[metric])):metric==='skill'?fmtSkill(selected[metric]):fmt(selected[metric]);
+ $('individualUnit').textContent=({energy:'エナジー / 日',skill:'回 / 日',pot:'枠 / 日'})[metric]||'個 / 日';
  $('selectedChips').replaceChildren(...ids.map(id=>{const span=document.createElement('span');span.className='chip';span.textContent=id<0?'補正なし':SleepLab.subs[id].name;return span;}));
  $('rank').textContent=`${integer(s.rank)}位`;$('population').textContent=`/ ${integer(s.total)}通り`;
  $('percentile').textContent=`${s.percent<.1?s.percent.toFixed(2):s.percent.toFixed(1)}%`;$('deviation').textContent=s.deviation.toFixed(1);
@@ -563,6 +581,9 @@ function update(){
  $('timing').textContent=`計算・描画準備 ${Math.round(performance.now()-start)} ms`;
  try{localStorage.setItem('sleep-lab-v3',JSON.stringify(state));}catch{}
 }
+for(const button of document.querySelectorAll('.individual-metrics button'))button.addEventListener('click',()=>{
+ state.metric=button.dataset.metric;update();
+});
 for(const button of document.querySelectorAll('.rank-metric'))button.addEventListener('click',()=>{
  state.metric=button.dataset.metric;update();
  document.querySelector('.selection').scrollIntoView({block:'nearest'});
