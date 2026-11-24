@@ -258,6 +258,11 @@ main > [role="tablist"] { margin: 0 0 18px; }
 <details><summary>基礎データを確認・調整する</summary><div class="content"><p>非公式の推定値をローカルに収録。計算でAPI通信は行いません。画像読み取りはTesseract.jsのライブラリ・日本語データをダウンロードしてブラウザ内で処理します。入力すると全構成を再計算します。ポケモンを切り替えると、その種族の初期データと食材候補に切り替わります。</p><div class="settings-grid"><div><label for="baseTime">Lv.1 基準おてつだい秒数</label><input id="baseTime" type="number" min="1" max="100000" step="1" value="2400" required></div><div><label for="baseIng">基礎食材確率（%）</label><input id="baseIng" type="number" min="0" max="54" step="0.01" value="22.4" required></div><div><label for="baseSkill">基礎スキル確率（%）</label><input id="baseSkill" type="number" min="0" max="54" step="0.01" value="1.6" required></div></div><p>確率の入力上限は54%（最大補正時も100%以内）。調整値もCSVに記録されます。</p></div></details>
 <details><summary>収録データ・参考資料について</summary><div class="content"><p id="datasetSummary"></p><p>最終進化の判定は公開元の remainingEvolutions=0 に基づきます。ミュウ・ミュウツーは公開元の暫定・試験値、エルフーンの確率は検証中の推定値です。食材・きのみの通常収集とスキル発動回数は全収録種に対応。チーム依存、ランダムな発動先、大成功等の追加効果は、明記した基本分を除いて未計算です。</p><p>添付画像の厳選表を比較操作の参考にしています。動画はタイトル・添付の場面を参照し、字幕や全編の内容は未確認です。基礎データは2026年11月4日取得。エルフーン・ひとくちナッツは11月16日追補。基礎確率は非公式の推定値です。</p><div class="source-links"><a href="https://www.pokemonsleepdaifuku.com/pokemon/エルフーン/" target="_blank" rel="noopener">エルフーンの追補データ ↗</a><a href="https://github.com/nerolis-lab/nerolis-lab" target="_blank" rel="noopener">種族・食材データ：Neroli’s Lab ↗</a><a href="https://github.com/PokeAPI/pokeapi" target="_blank" rel="noopener">日本語名：PokéAPI ↗</a><a href="https://www.pokemonsleepdaifuku.com/checker/expected/" target="_blank" rel="noopener">期待値チェッカー ↗</a><a href="https://www.youtube.com/watch?v=HrMmmGiP7Xc" target="_blank" rel="noopener">参考動画 ↗</a><a href="https://wikiwiki.jp/poke_sleep/リザードン" target="_blank" rel="noopener">リザードンのデータ ↗</a><a href="https://github.com/naptha/tesseract.js" target="_blank" rel="noopener">画像読取：Tesseract.js ↗</a><a href="https://wikiwiki.jp/poke_sleep/バリヤード" target="_blank" rel="noopener">バリヤードのデータ ↗</a><a href="https://wikiwiki.jp/poke_sleep/ジバコイル" target="_blank" rel="noopener">ジバコイルのデータ ↗</a><a href="https://wikiwiki.jp/poke_sleep/メインスキル/料理パワーアップ" target="_blank" rel="noopener">料理パワーアップS ↗</a><a href="https://wikiwiki.jp/poke_sleep/おてつだい/おてつだい時間" target="_blank" rel="noopener">時間の検証 ↗</a><a href="https://wikiwiki.jp/poke_sleep/検証/おてつだいの仕様" target="_blank" rel="noopener">げんき・回収の検証 ↗</a><a href="https://wikiwiki.jp/poke_sleep/せいかく" target="_blank" rel="noopener">性格補正 ↗</a><a href="https://wikiwiki.jp/poke_sleep/サブスキル" target="_blank" rel="noopener">サブスキル ↗</a><a href="https://wikiwiki.jp/poke_sleep/メインスキル/食材ゲット" target="_blank" rel="noopener">食材ゲットS ↗</a></div></div></details>
 <details><summary>データとアイコンの出典・ライセンス</summary><div class="content"><p>種族定義・食材アイコン：Neroli’s Lab。日本語の種族名：PokéAPI。ゲームの画像・キャラクターの権利は各権利者に帰属します。公開元のライセンスとNOTICEを以下に収録しています。</p><pre id="licenseText" style="white-space:pre-wrap;max-height:300px;overflow:auto;font-size:10px"></pre></div></details></details>
+<section class="panel stat" aria-labelledby="inventoryFillTitle">
+<h3 id="inventoryFillTitle">ノータップで所持上限に達するまで</h3>
+<div class="value"><span id="inventoryFillTime">—</span><small>（上限 <span id="inventoryFillCapacity">—</span>）</small></div>
+<p>所持数0・げんき100から、回収も回復もしない場合の平均。げんきは10分ごとに1下がる想定です。食材・きのみの取得数により前後します。</p>
+</section>
 <section class="panel compare-panel" aria-labelledby="compareTitle"><div class="ranking-headline"><h2 id="compareTitle">2個体を比較</h2><button id="clearCompare" class="button" type="button">比較をクリア</button></div><p class="help">入力欄やランキングから個体を選び、A・Bに登録してください。条件ごと保存し、好物一致は個別に変更できます。</p><div class="compare-slots"><div><button id="saveCompareA" class="button" type="button">今の個体をAに登録</button><div id="compareA"></div></div><div><button id="saveCompareB" class="button" type="button">今の個体をBに登録</button><div id="compareB"></div></div></div><p id="compareNotice" class="help"></p><div class="table-wrap"><table aria-label="2個体の期待値比較"><thead><tr><th>比較項目（1日あたり）</th><th>A</th><th>B</th><th>差 A − B</th></tr></thead><tbody id="compareRows"></tbody></table></div><p class="help">食材別の行は通常収集のみ。スキル由来食材は別行の合計で表示します。エナジーは現在のツールと同じ基礎換算です。</p></section>
 </div></div><footer>ねむりのラボ · 非公式ファンツール / 計算はオフライン対応・画像読取はOCR取得時に通信 · 設定はこのブラウザに保存されます</footer>
 </section><section id="candyPanel" role="tabpanel" aria-labelledby="candyTab" hidden>
@@ -351,17 +356,40 @@ const SleepLab = (() => {
  function combinations(n,k,start=0,prefix=[],out=[]){if(!k){out.push(prefix);return out;}for(let i=start;i<=n-k;i++)combinations(n,k-1,i+1,[...prefix,i],out);return out;}
  const combos=Array.from({length:5},(_,count)=>combinations(subs.length,count));
  function foodSlots(c){const p=species[c.pokemon];return [p.slots[0].find(f=>f.id===(c.food1||p.defaultFood1)),p.slots[1].find(f=>f.id===c.food2),p.slots[2].find(f=>f.id===c.food3)].slice(0,countFoodSlots(c.level));}
+ const helpOutcomes=(ing,counts,berryCount)=>[[berryCount,1-ing],...counts.map(count=>[count,ing/counts.length])];
+ function inventoryFillSeconds(baseSeconds,ing,counts,berryCount,capacity){
+  const outcomes=helpOutcomes(ing,counts,berryCount);
+  let mass=new Float64Array(capacity);
+  mass[0]=1;
+  let elapsed=0,expected=0,survival=1;
+  for(let step=0;step<capacity&&survival>0;step++){
+   const energy=Math.max(0,100-Math.floor(elapsed/600));
+   const factor=energy>80?.45:energy>60?.52:energy>40?.62:energy>20?.71:1;
+   const duration=Math.max(1,Math.floor(baseSeconds*factor));
+   elapsed+=duration;
+   expected+=duration*survival;
+   const next=new Float64Array(capacity);
+   for(let held=0;held<capacity;held++){
+    if(!mass[held])continue;
+    for(const [count,chance] of outcomes)if(held+count<capacity)next[held+count]+=mass[held]*chance;
+   }
+   mass=next;
+   survival=mass.reduce((total,value)=>total+value,0);
+  }
+  return expected;
+ }
  const intervalCache=new Map();
  function collectionModel(helps,ing,proc,counts,berryCount,capacity,stock){
  const key=[helps,ing,proc,counts.join(','),berryCount,capacity,stock].join('|');if(intervalCache.has(key))return intervalCache.get(key);
  const n=Math.floor(helps),fraction=helps-n;let mass=new Float64Array(capacity+1),zero=new Float64Array(capacity+1),one=new Float64Array(capacity+1);mass[0]=zero[0]=1;let eligible=0;
  const snapshot=()=>({eligible,procs:stock===2?2-2*zero.reduce((a,b)=>a+b,0)-one.reduce((a,b)=>a+b,0):1-zero.reduce((a,b)=>a+b,0)});
+ const moves=helpOutcomes(ing,counts,berryCount);
  let before;
  for(let step=0;step<=n;step++){
   if(step===n)before=snapshot();
   const m=new Float64Array(capacity+1),z=new Float64Array(capacity+1),o=new Float64Array(capacity+1);
   m[capacity]=mass[capacity];z[capacity]=zero[capacity];o[capacity]=one[capacity];
-  for(let i=0;i<capacity;i++)if(mass[i]>1e-16){eligible+=mass[i];const moves=[[berryCount,1-ing],...counts.map(count=>[count,ing/counts.length])];for(const [count,chance] of moves){const j=Math.min(capacity,i+count);m[j]+=mass[i]*chance;z[j]+=zero[i]*(1-proc)*chance;o[j]+=(one[i]*(1-proc)+zero[i]*proc)*chance;}}
+  for(let i=0;i<capacity;i++)if(mass[i]>1e-16){eligible+=mass[i];for(const [count,chance] of moves){const j=Math.min(capacity,i+count);m[j]+=mass[i]*chance;z[j]+=zero[i]*(1-proc)*chance;o[j]+=(one[i]*(1-proc)+zero[i]*proc)*chance;}}
   mass=m;zero=z;one=o;
  }
  const after=snapshot(),result={eligible:before.eligible+(after.eligible-before.eligible)*fraction,procs:before.procs+(after.procs-before.procs)*fraction};intervalCache.set(key,result);return result;
@@ -398,7 +426,7 @@ const SleepLab = (() => {
   if(p.effect==='burst')skillEffect=burstEnergy;
   const skillEnergy=skill*(p.directEnergyAmounts?.[effectiveLevel]||0)*field+burstEnergy;
   const energy=berryEnergy+ingredientEnergy+skillEnergy;
-  return {burstEnergy,burstPerProc,averageBerryEnergy,energy,berryEnergy,ingredientEnergy,skillEnergy,berryUnit,natureId,ids:[...ids],capacity,eligibleHelps,time,helps,ingProb,skillProb,...quantities,direct,berries,skill,random,pot,skillEffect,total:direct+random,effectiveLevel};
+  return {burstEnergy,burstPerProc,averageBerryEnergy,energy,berryEnergy,ingredientEnergy,skillEnergy,berryUnit,natureId,ids:[...ids],capacity,eligibleHelps,time,helps,berryCount,ingProb,skillProb,...quantities,direct,berries,skill,random,pot,skillEffect,total:direct+random,effectiveLevel};
  }
  function normalizeSearch(value){return String(value).normalize('NFKC').toLowerCase().replace(/[ぁ-ゖ]/g,c=>String.fromCharCode(c.charCodeAt(0)+0x60)).replace(/[\s・･ーｰ－—‐-]/g,'').replace(/[ァィゥェォッャュョヮ]/g,c=>({'ァ':'ア','ィ':'イ','ゥ':'ウ','ェ':'エ','ォ':'オ','ッ':'ツ','ャ':'ヤ','ュ':'ユ','ョ':'ヨ','ヮ':'ワ'})[c]);}
  function searchPokemon(query){const q=normalizeSearch(query);if(!q)return [];return Object.entries(species).filter(([id,p])=>[p.name,id,p.dex].some(v=>normalizeSearch(v).includes(q))).sort((a,b)=>{const score=p=>normalizeSearch(p.name)===q?0:normalizeSearch(p.name).startsWith(q)?1:2;return score(a[1])-score(b[1])||a[1].name.localeCompare(b[1].name,'ja');});}
@@ -406,7 +434,7 @@ const SleepLab = (() => {
  function population(c){intervalCache.clear();return natures.flatMap((_,n)=>combos[countSlots(c.level)].map(ids=>calculate(c,n,ids)));}
  const score=(r,metric)=>Math.round(r[metric]*1e8);
  function stats(rows,selected,metric){const target=score(selected,metric);const better=rows.filter(r=>score(r,metric)>target).length;const equal=rows.filter(r=>score(r,metric)===target).length;const mean=rows.reduce((s,r)=>s+r[metric],0)/rows.length;const sd=Math.sqrt(rows.reduce((s,r)=>s+(r[metric]-mean)**2,0)/rows.length);return {rank:better+1,equal,total:rows.length,percent:(better+1)/rows.length*100,deviation:sd<1e-10?50:50+10*(selected[metric]-mean)/sd};}
- return {normalizeSearch,searchPokemon,natures,subs,foods,species,defaults,validLevel,collectionModel,preferredMetric,countSlots,countFoodSlots,foodSlots,combinations,calculate,population,score,stats};
+ return {normalizeSearch,searchPokemon,natures,subs,foods,species,defaults,validLevel,collectionModel,inventoryFillSeconds,preferredMetric,countSlots,countFoodSlots,foodSlots,combinations,calculate,population,score,stats};
 })();
 const $=id=>document.getElementById(id);
 const fmt=n=>n.toLocaleString('ja-JP',{minimumFractionDigits:1,maximumFractionDigits:1});
@@ -565,6 +593,10 @@ function update(){
  const fill=allRows.length===s.equal?50:100*(s.total-s.rank)/(s.total-1);$('rankFill').style.width=`${Math.max(0,Math.min(100,fill))}%`;
  $('tieInfo').textContent=`同じ期待値 ${integer(s.equal)}通り。`+(ids.includes(-1)?'「なし」を含む比較用構成のため、母集団に挿入した場合の順位です。':'順位は全構成の中での順位です。')+(allRows.length===s.equal?' この評価軸では全構成が同値です。':'');
  $('capacityInfo').textContent='回収：'+state.collectionHours+'時間ごと / この個体の所持上限：'+selected.capacity+'個';
+ const counts=SleepLab.foodSlots(state).map(food=>food.count);
+ const fullMinutes=Math.max(1,Math.round(SleepLab.inventoryFillSeconds(selected.time,selected.ingProb,counts,selected.berryCount,selected.capacity)/60));
+ $('inventoryFillTime').textContent=fullMinutes>=60?Math.floor(fullMinutes/60)+'時間'+fullMinutes%60+'分':fullMinutes+'分';
+ $('inventoryFillCapacity').textContent=selected.capacity+'個';
  $('energy').textContent=integer(Math.round(selected.energy));$('energyBreakdown').textContent='きのみ '+integer(Math.round(selected.berryEnergy))+' ＋ 食材 '+integer(Math.round(selected.ingredientEnergy))+' ＋ スキル '+integer(Math.round(selected.skillEnergy));
  $('direct').textContent=fmt(selected.direct);$('skill').textContent=fmtSkill(selected.skill);$('berries').textContent=fmt(selected.berries);$('skillEffect').textContent=p.effectSupported?fmt(selected.skillEffect):'未計算';
  for(const id of p.foods)$('food-'+id).textContent=fmt(selected[id]);
