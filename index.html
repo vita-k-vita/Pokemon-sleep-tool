@@ -164,6 +164,18 @@ main > [role="tablist"] { margin: 0 0 18px; }
 .individual-expected span{font-size:11px;color:#b9ceca}
 .individual-expected+.rank-overview{margin-top:8px}
 
+.level-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.level-controls input,.level-controls select{min-width:0}
+.compact-select-control{display:contents}
+.compact-select-trigger{display:none}
+@media(max-width:740px){
+ .compact-select-control{display:inline-grid;position:relative;min-width:0;max-width:100%;vertical-align:middle}
+ .compact-select-control select{pointer-events:none}
+ .compact-select-trigger{display:block;position:absolute;inset:0;width:100%;border:0;border-radius:8px;background:transparent;padding:0;touch-action:manipulation}
+ .compact-select-control:has(select:disabled) .compact-select-trigger{pointer-events:none}
+ .config .level-controls input,.config .level-controls select{min-height:32px;padding:3px 5px;font-size:12px}
+}
+
 .party-heading { margin-bottom: 14px; }
 .party-layout { display: grid; grid-template-columns: minmax(0, 390px) minmax(0, 1fr); gap: 14px; align-items: start; }
 .party-inputs, .party-results { padding: 16px; }
@@ -206,12 +218,12 @@ main > [role="tablist"] { margin: 0 0 18px; }
 <noscript>このツールを使うには、ブラウザのJavaScriptを有効にしてください。</noscript>
 <main>
 <div class="tabs" role="tablist" aria-label="機能切り替え"><button id="expectationTab" role="tab" aria-selected="true" aria-controls="expectationPanel">期待値ランキング</button><button id="candyTab" role="tab" aria-selected="false" aria-controls="candyPanel" tabindex="-1">必要アメ計算</button><button id="recipeTab" role="tab" aria-selected="false" aria-controls="recipePanel" tabindex="-1">レシピ食材計算</button><button id="partyTab" type="button" role="tab" aria-selected="false" aria-controls="partyPanel" tabindex="-1">パーティ料理計算</button><button id="fieldTab" role="tab" aria-selected="false" aria-controls="fieldPanel" tabindex="-1">フィールド別出現一覧</button></div><section id="expectationPanel" role="tabpanel" aria-labelledby="expectationTab"><div class="layout">
-<aside class="panel config"><details class="upload-box" id="uploadPanel"><summary>▧ 画像から個体を入力</summary><section aria-label="画像から個体を入力" style="padding-top:12px"><label for="imageFile">おてつだい能力画面のスクリーンショット</label><input id="imageFile" type="file" accept="image/png,image/jpeg,image/webp"><p class="help">画像を選ぶと読取結果を自動反映します。画像は外部に送信しません。OCRエンジン取得時のみ通信が必要です。</p><p id="importStatus" class="help" role="status">対応：収録ポケモン全種（日本語の能力画面）</p><img id="imagePreview" hidden alt="読み取り対象のスクリーンショット" style="width:100%;max-height:180px;object-fit:contain;margin-top:10px"><div id="evolutionPicker" hidden><label for="evolutionTarget">分岐進化の計算先</label><select id="evolutionTarget"></select><button id="applyEvolution" type="button" class="button">この進化先で反映</button></div><ul id="importReport" class="import-report"></ul><details style="padding:8px 0"><summary>読み取った文字を見る</summary><textarea id="ocrText" readonly aria-label="OCRの読取文字" style="width:100%;height:140px;font-size:11px;margin-top:8px"></textarea></details><p class="help">文字の誤認識があります。未読取項目は結果に明記します。食材は個数と見えているアイコンから候補を判定します。曖昧な枠は手動で確認してください。比較レベル25・30・60・70は維持します。</p></section></details><hr class="divider">
+<aside class="panel config"><details class="upload-box" id="uploadPanel"><summary>▧ 画像から個体を入力</summary><section aria-label="画像から個体を入力" style="padding-top:12px"><label for="imageFile">おてつだい能力画面のスクリーンショット</label><input id="imageFile" type="file" accept="image/png,image/jpeg,image/webp"><p class="help">画像を選ぶと読取結果を自動反映します。画像は外部に送信しません。OCRエンジン取得時のみ通信が必要です。</p><p id="importStatus" class="help" role="status">対応：収録ポケモン全種（日本語の能力画面）</p><img id="imagePreview" hidden alt="読み取り対象のスクリーンショット" style="width:100%;max-height:180px;object-fit:contain;margin-top:10px"><div id="evolutionPicker" hidden><label for="evolutionTarget">分岐進化の計算先</label><select id="evolutionTarget"></select><button id="applyEvolution" type="button" class="button">この進化先で反映</button></div><ul id="importReport" class="import-report"></ul><details style="padding:8px 0"><summary>読み取った文字を見る</summary><textarea id="ocrText" readonly aria-label="OCRの読取文字" style="width:100%;height:140px;font-size:11px;margin-top:8px"></textarea></details><p class="help">文字の誤認識があります。未読取項目は結果に明記します。食材は個数と見えているアイコンから候補を判定します。曖昧な枠は手動で確認してください。入力済みの比較レベルは維持します。</p></section></details><hr class="divider">
 <div class="section-title"><h2><span class="step">01</span>比較する条件</h2><span class="tag">LOCAL</span></div>
 <div class="field"><label for="pokemonSearch">ポケモン名で検索</label><input type="search" id="pokemonSearch" placeholder="例：じば、リザ、ﾋﾟｶ" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="pokemonSuggestions" autocomplete="off"><div id="pokemonSuggestions" role="listbox" aria-label="ポケモン検索候補" hidden></div><p id="catalogCount" class="help"></p></div><div class="field"><label for="pokemon">ポケモン</label><select id="pokemon"></select><p id="specialtyHint" class="specialty-hint"></p><p id="dataQuality" class="error" hidden></p><div class="help">進化先のない種族・無進化・限定フォームを収録。</div></div>
-<div class="two"><div class="field"><label for="level">ポケモンのレベル</label><select id="level"><option value="25">Lv.25</option><option value="30">Lv.30</option><option value="60" selected>Lv.60</option><option value="70">Lv.70</option></select></div><div class="field"><label for="mainLevel">メインスキルの基礎Lv.</label><select id="mainLevel"></select></div></div>
+<div class="two"><div class="field"><label for="level">ポケモンのレベル</label><div class="level-controls"><input id="level" type="number" min="1" max="70" step="1" value="60" inputmode="numeric" required><select id="levelPreset" aria-label="レベルの候補"><option value="">候補</option><option value="25">Lv.25</option><option value="30">Lv.30</option><option value="60" selected>Lv.60</option><option value="70">Lv.70</option></select></div></div><div class="field"><label for="mainLevel">メインスキルの基礎Lv.</label><select id="mainLevel"></select></div></div>
 <p id="mainHelp" class="help" style="margin-top:-8px">食材ゲットS。基礎Lv.は進化・たねによる分。サブスキルのLv.アップは自動加算（上限7）。</p>
-<div class="field"><label for="collectionHours">回収間隔</label><select id="collectionHours"><option value="4">4時間ごと（初期値）</option><option value="6">6時間ごと</option></select><p id="capacityInfo" class="help"></p></div><details><summary>エナジー換算条件</summary><label class="check"><input id="berryFavorite" type="checkbox">カビゴンの好物きのみ（2倍）</label><label for="fieldBonus">フィールドボーナス（%）</label><input id="fieldBonus" type="number" min="0" max="100" value="0"><label for="cookMultiplier">食材エナジー換算倍率</label><input id="cookMultiplier" type="number" min="0" max="20" step="0.01" value="1"><p class="help">きのみバースト：5匹中3匹が好物一致。自身は実際のきのみ、他4匹は全18種のレベル補正・丸め後エナジーの等重み平均、全員同レベル。自身の一致は上のチェックに従います。ばけのかわの大成功、りゅうせいぐんの追加条件は未計算。初期値1倍＝食材の基礎エナジー。レシピ・料理Lv.・大成功は個別計算しません。スキル食材は全20食材の基礎値平均で換算。回復・チーム依存・未計算の追加効果は含みません。</p></details><hr class="divider"><h3>食材構成</h3>
+<div class="field"><label for="collectionHours">回収間隔</label><select id="collectionHours"><option value="4">4時間ごと（初期値）</option><option value="6">6時間ごと</option></select><label class="check"><input id="skillEvent" type="checkbox">スキル発動回数のイベント補正 ×1.25</label><p id="capacityInfo" class="help"></p></div><details><summary>エナジー換算条件</summary><label class="check"><input id="berryFavorite" type="checkbox">カビゴンの好物きのみ（2倍）</label><label for="fieldBonus">フィールドボーナス（%）</label><input id="fieldBonus" type="number" min="0" max="100" value="0"><label for="cookMultiplier">食材エナジー換算倍率</label><input id="cookMultiplier" type="number" min="0" max="20" step="0.01" value="1"><p class="help">きのみバースト：5匹中3匹が好物一致。自身は実際のきのみ、他4匹は全18種のレベル補正・丸め後エナジーの等重み平均、全員同レベル。自身の一致は上のチェックに従います。ばけのかわの大成功、りゅうせいぐんの追加条件は未計算。初期値1倍＝食材の基礎エナジー。レシピ・料理Lv.・大成功は個別計算しません。スキル食材は全20食材の基礎値平均で換算。回復・チーム依存・未計算の追加効果は含みません。</p></details><hr class="divider"><h3>食材構成</h3>
 <div class="field food-slot"><label for="food1">Lv.1</label><select id="food1" class="native-food-select" tabindex="-1" aria-hidden="true"></select><div id="foodChoices1" class="food-choices" role="group" aria-label="第1食材のアイコン選択"></div></div>
 <div class="field food-slot"><label for="food2">Lv.30</label><select id="food2" class="native-food-select" tabindex="-1" aria-hidden="true"></select><div id="foodChoices2" class="food-choices" role="group" aria-label="第2食材のアイコン選択"></div></div>
 <div class="field food-slot"><label for="food3">Lv.60</label><select id="food3" class="native-food-select" tabindex="-1" aria-hidden="true"></select><div id="foodChoices3" class="food-choices" role="group" aria-label="第3食材のアイコン選択"></div></div>
@@ -242,7 +254,7 @@ main > [role="tablist"] { margin: 0 0 18px; }
 <div class="table-tools"><label class="check"><input id="group" type="checkbox" checked>同じ期待値の構成をまとめる</label><span class="status" id="timing"></span></div></div>
 <div class="table-wrap"><table><thead><tr><th>全体順位</th><th>性格</th><th>サブスキル（順不同）</th><th class="num">食材 / 日</th><th class="num">スキル / 日</th><th class="num" id="lastColumn">合計食材 / 日</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
 <div class="footnote" id="tableNote"></div>
-<details><summary>計算式とランキングの範囲</summary><p>総エナジー＝きのみ数×ROUND(MAX(基礎きのみ値＋Lv−1, 基礎きのみ値×1.025^(Lv−1)))×好物倍率＋食材基礎エナジー×換算倍率＋直接エナジースキル。全体にフィールド補正を適用。ランダム食材は全20食材の基礎値平均を使用します。料理レシピ・料理Lv.・大成功は自動計算しません。追加きのみ・追加おてつだい・回復・コピーなどの未計算効果は含みません。きのみとくいの順位はこの換算総量を使用します。</p><a href="https://wikiwiki.jp/poke_sleep/検証/きのみエナジーの計算式" target="_blank" rel="noopener">きのみエナジーの検証</a><p>4時間または6時間ごとに食材・きのみを全回収し、スキルも発動するモデルです。所持数の確率分布を追跡し、満杯になる直前のおてつだいは一括取得、その後はきのみのみ（いつのまに育成分を含む）とします。スキルは満杯まで抽選、スキル・オールとくいは2回、他は1回まで蓄積。回収間の端数おてつだいは隣接する整数回数を補間します。スキル由来食材は回収時に直ちに収納する想定です。夜間も同じ回収間隔で、睡眠中の回収不能時間は別途モデル化していません。下記の単純式は所持上限を適用する前の基準値です。</p><div class="content"><p>同一ポケモン・レベル・食材構成・基礎スキルLv.で比較します。種族を切り替えると、食材とくい→通常食材、スキルとくい→スキル発動、きのみとくい→総エナジー、オールとくい→スキル発動を優先します。性格25種 × サブスキル17種から解放枠数だけ選ぶ全組み合わせ。解放済み枠の順序は同一視します。Lv.25/30では2枠、Lv.60では3枠、Lv.70では4枠を計算します。食材はLv.25で1枠、Lv.30で2枠、Lv.60で3枠を解放します。Lv.70でも食材は3枠です。</p><p>全構成を等しい重みで評価します。実際に仲間になる確率、金枠確定条件、将来の育成価値は反映しません。「なし」は比較用で母集団に含みません。順位は自分より期待値が高い構成数＋1（同値は同順位）。上位割合＝順位÷母集団数。偏差値＝50＋10×（期待値−母平均）÷母標準偏差。分散0の場合は50です。</p><div class="formula">時間 T = floor(基準秒 × 性格時間倍率 × (1 − (Lv.−1) × 0.002) × (1 − スピード補正合計))<br>おてつだい回数 H = 86400 ÷ (T × 0.52)<br>食材確率 P = 基礎食材確率 × 性格倍率 × (1 ＋ 食材サブスキル補正合計)<br>各食材 = H × P × 各解放枠の個数 ÷ 解放食材枠数<br>きのみ数 = H × (1 − P) × (きのみとくいなら2、それ以外1 ＋ きのみの数Sなら1)<br>スキル回数 = H × 基礎スキル確率 × 性格倍率 × (1 ＋ スキルサブスキル補正合計)<br>ランダム食材 = スキル回数 × 有効スキルLv.の獲得数<br>食材合計 = 通常収集 ＋ ランダム食材（食材ゲットSのみ）<br>鍋拡張期待値 = スキル回数 × 有効スキルLv.の拡張枠数（料理パワーアップSのみ）</div><p>食材枠は等確率。食材確率S/Mは＋18%/36%、スキル確率S/Mは＋18%/36%、おてスピS/Mは時間−7%/14%、おてつだいボーナスは本人に−5%を加算（時間短縮は最大35%）。他のチームメンバーからの補正は0です。</p><p>げんきは80ちょうどで固定し、時間倍率0.52を使用します（80超の0.45とは異なります）。スピード上昇性格は時間×0.9、下降性格は更新後の×1.075。食材・スキルの性格補正は×1.2/0.8です。</p><p>24時間こまめに回収する理想化モデルです。クールタイム・不発天井、キャンプ・イベント・リボンを省略しています。実際の獲得数や参考チェッカーの結果と一致するものではありません。きのみの数Sは通常きのみ数のみに反映します。所持数アップS/M/Lは上限に＋6/12/18個を加算します。EXP・げんき回復はげんき固定のため反映しません。きのみ数は通常収集のみで、きのみバースト等の追加効果は含みません。</p><p>バリヤードのものまねはコピー先のチーム構成に依存するため、発動回数のみ計算し、追加効果は未計算です（食材合計は通常収集のみ）。ジバコイルの鍋拡張は延べ枠数です。料理による消費・蓄積上限200枠は計算せず、収集食材には加算しません。ランダム食材は入手済み食材の範囲が未設定のため、種類ごとの配分を出していません。上の各食材数と食材別ランキングは通常収集のみです。</p></div></details>
+<details><summary>計算式とランキングの範囲</summary><p>総エナジー＝きのみ数×ROUND(MAX(基礎きのみ値＋Lv−1, 基礎きのみ値×1.025^(Lv−1)))×好物倍率＋食材基礎エナジー×換算倍率＋直接エナジースキル。全体にフィールド補正を適用。ランダム食材は全20食材の基礎値平均を使用します。料理レシピ・料理Lv.・大成功は自動計算しません。追加きのみ・追加おてつだい・回復・コピーなどの未計算効果は含みません。きのみとくいの順位はこの換算総量を使用します。</p><a href="https://wikiwiki.jp/poke_sleep/検証/きのみエナジーの計算式" target="_blank" rel="noopener">きのみエナジーの検証</a><p>4時間または6時間ごとに食材・きのみを全回収し、スキルも発動するモデルです。所持数の確率分布を追跡し、満杯になる直前のおてつだいは一括取得、その後はきのみのみ（いつのまに育成分を含む）とします。スキルは満杯まで抽選、スキル・オールとくいは2回、他は1回まで蓄積。回収間の端数おてつだいは隣接する整数回数を補間します。スキル由来食材は回収時に直ちに収納する想定です。夜間も同じ回収間隔で、睡眠中の回収不能時間は別途モデル化していません。下記の単純式は所持上限を適用する前の基準値です。</p><div class="content"><p>同一ポケモン・レベル・食材構成・基礎スキルLv.で比較します。種族を切り替えると、食材とくい→通常食材、スキルとくい→スキル発動、きのみとくい→総エナジー、オールとくい→スキル発動を優先します。性格25種 × サブスキル17種から解放枠数だけ選ぶ全組み合わせ。解放済み枠の順序は同一視します。Lv.1〜70で計算できます。サブスキルはLv.10・25・50・70、追加食材はLv.30・60で解放します。イベント補正を有効にすると、回収・所持上限を反映した後の発動期待値と、計算対象のスキル効果を1.25倍にします。</p><p>全構成を等しい重みで評価します。実際に仲間になる確率、金枠確定条件、将来の育成価値は反映しません。「なし」は比較用で母集団に含みません。順位は自分より期待値が高い構成数＋1（同値は同順位）。上位割合＝順位÷母集団数。偏差値＝50＋10×（期待値−母平均）÷母標準偏差。分散0の場合は50です。</p><div class="formula">時間 T = floor(基準秒 × 性格時間倍率 × (1 − (Lv.−1) × 0.002) × (1 − スピード補正合計))<br>おてつだい回数 H = 86400 ÷ (T × 0.52)<br>食材確率 P = 基礎食材確率 × 性格倍率 × (1 ＋ 食材サブスキル補正合計)<br>各食材 = H × P × 各解放枠の個数 ÷ 解放食材枠数<br>きのみ数 = H × (1 − P) × (きのみとくいなら2、それ以外1 ＋ きのみの数Sなら1)<br>スキル回数 = H × 基礎スキル確率 × 性格倍率 × (1 ＋ スキルサブスキル補正合計)<br>ランダム食材 = スキル回数 × 有効スキルLv.の獲得数<br>食材合計 = 通常収集 ＋ ランダム食材（食材ゲットSのみ）<br>鍋拡張期待値 = スキル回数 × 有効スキルLv.の拡張枠数（料理パワーアップSのみ）</div><p>食材枠は等確率。食材確率S/Mは＋18%/36%、スキル確率S/Mは＋18%/36%、おてスピS/Mは時間−7%/14%、おてつだいボーナスは本人に−5%を加算（時間短縮は最大35%）。他のチームメンバーからの補正は0です。</p><p>げんきは80ちょうどで固定し、時間倍率0.52を使用します（80超の0.45とは異なります）。スピード上昇性格は時間×0.9、下降性格は更新後の×1.075。食材・スキルの性格補正は×1.2/0.8です。</p><p>24時間こまめに回収する理想化モデルです。クールタイム・不発天井、キャンプ・イベント・リボンを省略しています。実際の獲得数や参考チェッカーの結果と一致するものではありません。きのみの数Sは通常きのみ数のみに反映します。所持数アップS/M/Lは上限に＋6/12/18個を加算します。EXP・げんき回復はげんき固定のため反映しません。きのみ数は通常収集のみで、きのみバースト等の追加効果は含みません。</p><p>バリヤードのものまねはコピー先のチーム構成に依存するため、発動回数のみ計算し、追加効果は未計算です（食材合計は通常収集のみ）。ジバコイルの鍋拡張は延べ枠数です。料理による消費・蓄積上限200枠は計算せず、収集食材には加算しません。ランダム食材は入手済み食材の範囲が未設定のため、種類ごとの配分を出していません。上の各食材数と食材別ランキングは通常収集のみです。</p></div></details>
 <details><summary>基礎データを確認・調整する</summary><div class="content"><p>非公式の推定値をローカルに収録。計算でAPI通信は行いません。画像読み取りはTesseract.jsのライブラリ・日本語データをダウンロードしてブラウザ内で処理します。入力すると全構成を再計算します。ポケモンを切り替えると、その種族の初期データと食材候補に切り替わります。</p><div class="settings-grid"><div><label for="baseTime">Lv.1 基準おてつだい秒数</label><input id="baseTime" type="number" min="1" max="100000" step="1" value="2400" required></div><div><label for="baseIng">基礎食材確率（%）</label><input id="baseIng" type="number" min="0" max="54" step="0.01" value="22.4" required></div><div><label for="baseSkill">基礎スキル確率（%）</label><input id="baseSkill" type="number" min="0" max="54" step="0.01" value="1.6" required></div></div><p>確率の入力上限は54%（最大補正時も100%以内）。調整値もCSVに記録されます。</p></div></details>
 <details><summary>収録データ・参考資料について</summary><div class="content"><p id="datasetSummary"></p><p>最終進化の判定は公開元の remainingEvolutions=0 に基づきます。ミュウ・ミュウツーは公開元の暫定・試験値、エルフーンの確率は検証中の推定値です。食材・きのみの通常収集とスキル発動回数は全収録種に対応。チーム依存、ランダムな発動先、大成功等の追加効果は、明記した基本分を除いて未計算です。</p><p>添付画像の厳選表を比較操作の参考にしています。動画はタイトル・添付の場面を参照し、字幕や全編の内容は未確認です。基礎データは2026年11月4日取得。エルフーン・ひとくちナッツは11月16日追補。基礎確率は非公式の推定値です。</p><div class="source-links"><a href="https://www.pokemonsleepdaifuku.com/pokemon/エルフーン/" target="_blank" rel="noopener">エルフーンの追補データ ↗</a><a href="https://github.com/nerolis-lab/nerolis-lab" target="_blank" rel="noopener">種族・食材データ：Neroli’s Lab ↗</a><a href="https://github.com/PokeAPI/pokeapi" target="_blank" rel="noopener">日本語名：PokéAPI ↗</a><a href="https://www.pokemonsleepdaifuku.com/checker/expected/" target="_blank" rel="noopener">期待値チェッカー ↗</a><a href="https://www.youtube.com/watch?v=HrMmmGiP7Xc" target="_blank" rel="noopener">参考動画 ↗</a><a href="https://wikiwiki.jp/poke_sleep/リザードン" target="_blank" rel="noopener">リザードンのデータ ↗</a><a href="https://github.com/naptha/tesseract.js" target="_blank" rel="noopener">画像読取：Tesseract.js ↗</a><a href="https://wikiwiki.jp/poke_sleep/バリヤード" target="_blank" rel="noopener">バリヤードのデータ ↗</a><a href="https://wikiwiki.jp/poke_sleep/ジバコイル" target="_blank" rel="noopener">ジバコイルのデータ ↗</a><a href="https://wikiwiki.jp/poke_sleep/メインスキル/料理パワーアップ" target="_blank" rel="noopener">料理パワーアップS ↗</a><a href="https://wikiwiki.jp/poke_sleep/おてつだい/おてつだい時間" target="_blank" rel="noopener">時間の検証 ↗</a><a href="https://wikiwiki.jp/poke_sleep/検証/おてつだいの仕様" target="_blank" rel="noopener">げんき・回収の検証 ↗</a><a href="https://wikiwiki.jp/poke_sleep/せいかく" target="_blank" rel="noopener">性格補正 ↗</a><a href="https://wikiwiki.jp/poke_sleep/サブスキル" target="_blank" rel="noopener">サブスキル ↗</a><a href="https://wikiwiki.jp/poke_sleep/メインスキル/食材ゲット" target="_blank" rel="noopener">食材ゲットS ↗</a></div></div></details>
 <details><summary>データとアイコンの出典・ライセンス</summary><div class="content"><p>種族定義・食材アイコン：Neroli’s Lab。日本語の種族名：PokéAPI。ゲームの画像・キャラクターの権利は各権利者に帰属します。公開元のライセンスとNOTICEを以下に収録しています。</p><pre id="licenseText" style="white-space:pre-wrap;max-height:300px;overflow:auto;font-size:10px"></pre></div></details></details>
@@ -332,11 +344,12 @@ const SleepLab = (() => {
  const subs=[{name:'おてつだいスピードS',short:'おてスピS',speed:.07},{name:'おてつだいスピードM',short:'おてスピM',speed:.14},{name:'おてつだいボーナス',short:'おてボ',speed:.05},{name:'食材確率アップS',short:'食材確率S',ing:.18},{name:'食材確率アップM',short:'食材確率M',ing:.36},{name:'スキル確率アップS',short:'スキル確率S',skill:.18},{name:'スキル確率アップM',short:'スキル確率M',skill:.36},{name:'スキルレベルアップS',short:'スキルLv.S',level:1},{name:'スキルレベルアップM',short:'スキルLv.M',level:2},{name:'最大所持数アップS',short:'所持数S'},{name:'最大所持数アップM',short:'所持数M'},{name:'最大所持数アップL',short:'所持数L'},{name:'きのみの数S',short:'きのみS'},{name:'げんき回復ボーナス',short:'げんき回復ボ'},{name:'睡眠EXPボーナス',short:'睡眠EXPボ'},{name:'リサーチEXPボーナス',short:'リサーチEXPボ'},{name:'ゆめのかけらボーナス',short:'ゆめかけボ'}];
  const foods=CATALOG.foods;
  const species=CATALOG.species;
- const defaults={pokemon:'charizard',level:60,collectionHours:4,berryFavorite:false,fieldBonus:0,cookMultiplier:1,mainLevel:3,food1:'meat',food2:'ginger',food3:'herb',nature:11,sub0:3,sub1:4,sub2:1,sub3:-1,baseTime:2400,baseIng:22.4,baseSkill:1.6,metric:'direct',group:true};
+ const defaults={pokemon:'charizard',level:60,skillEvent:false,collectionHours:4,berryFavorite:false,fieldBonus:0,cookMultiplier:1,mainLevel:3,food1:'meat',food2:'ginger',food3:'herb',nature:11,sub0:3,sub1:4,sub2:1,sub3:-1,baseTime:2400,baseIng:22.4,baseSkill:1.6,metric:'direct',group:true};
+ const validLevel=level=>Number.isInteger(level)&&level>=1&&level<=70;
  const countSlots=level=>level>=70?4:level>=50?3:level>=25?2:level>=10?1:0;
  const countFoodSlots=level=>level>=60?3:level>=30?2:1;
  function combinations(n,k,start=0,prefix=[],out=[]){if(!k){out.push(prefix);return out;}for(let i=start;i<=n-k;i++)combinations(n,k-1,i+1,[...prefix,i],out);return out;}
- const combos={2:combinations(subs.length,2),3:combinations(subs.length,3),4:combinations(subs.length,4)};
+ const combos=Array.from({length:5},(_,count)=>combinations(subs.length,count));
  function foodSlots(c){const p=species[c.pokemon];return [p.slots[0].find(f=>f.id===(c.food1||p.defaultFood1)),p.slots[1].find(f=>f.id===c.food2),p.slots[2].find(f=>f.id===c.food3)].slice(0,countFoodSlots(c.level));}
  const intervalCache=new Map();
  function collectionModel(helps,ing,proc,counts,berryCount,capacity,stock){
@@ -369,7 +382,7 @@ const SleepLab = (() => {
   for(const f of slots)quantities[f.id]+=eligibleHelps*ingProb*f.count/slots.length;
   const direct=Object.values(quantities).reduce((a,b)=>a+b,0);
   const berries=(helps-eligibleHelps*ingProb)*berryCount;
-  const skill=window.procs*24/hours,effectiveLevel=Math.min(p.amounts.length-1,c.mainLevel+sum('level'));
+  const skill=window.procs*24/hours*(c.skillEvent?1.25:1),effectiveLevel=Math.min(p.amounts.length-1,c.mainLevel+sum('level'));
   let skillEffect=skill*p.amounts[effectiveLevel];
   const random=p.effect==='ingredients'?skillEffect:0,pot=p.effect==='pot'?skillEffect:0;
   const berryUnit=Math.round(Math.max(p.berryValue+c.level-1,p.berryValue*1.025**(c.level-1)));
@@ -393,7 +406,7 @@ const SleepLab = (() => {
  function population(c){intervalCache.clear();return natures.flatMap((_,n)=>combos[countSlots(c.level)].map(ids=>calculate(c,n,ids)));}
  const score=(r,metric)=>Math.round(r[metric]*1e8);
  function stats(rows,selected,metric){const target=score(selected,metric);const better=rows.filter(r=>score(r,metric)>target).length;const equal=rows.filter(r=>score(r,metric)===target).length;const mean=rows.reduce((s,r)=>s+r[metric],0)/rows.length;const sd=Math.sqrt(rows.reduce((s,r)=>s+(r[metric]-mean)**2,0)/rows.length);return {rank:better+1,equal,total:rows.length,percent:(better+1)/rows.length*100,deviation:sd<1e-10?50:50+10*(selected[metric]-mean)/sd};}
- return {normalizeSearch,searchPokemon,natures,subs,foods,species,defaults,collectionModel,preferredMetric,countSlots,countFoodSlots,foodSlots,combinations,calculate,population,score,stats};
+ return {normalizeSearch,searchPokemon,natures,subs,foods,species,defaults,validLevel,collectionModel,preferredMetric,countSlots,countFoodSlots,foodSlots,combinations,calculate,population,score,stats};
 })();
 const $=id=>document.getElementById(id);
 const fmt=n=>n.toLocaleString('ja-JP',{minimumFractionDigits:1,maximumFractionDigits:1});
@@ -407,7 +420,7 @@ const current=()=>SleepLab.species[state.pokemon];
 function availableMetrics(){return ['energy','direct','skill','berries','total',...(current().effect==='pot'?['pot']:[]),...current().foods];}
 function validState(){
  const p=current();
- return !!p&&Number.isFinite(state.fieldBonus)&&state.fieldBonus>=0&&state.fieldBonus<=100&&Number.isFinite(state.cookMultiplier)&&state.cookMultiplier>=0&&state.cookMultiplier<=20&&[4,6].includes(state.collectionHours)&&[25,30,60,70].includes(state.level)&&Number.isInteger(state.mainLevel)&&state.mainLevel>=1&&state.mainLevel<p.amounts.length&&p.slots[0].some(f=>f.id===state.food1)&&p.slots[1].some(f=>f.id===state.food2)&&p.slots[2].some(f=>f.id===state.food3)&&Number.isInteger(state.nature)&&state.nature>=0&&state.nature<25&&[state.sub0,state.sub1,state.sub2,state.sub3].every(x=>Number.isInteger(x)&&x>=-1&&x<17)&&availableMetrics().includes(state.metric)&&Number.isFinite(state.baseTime)&&state.baseTime>=1&&state.baseTime<=100000&&Number.isFinite(state.baseIng)&&state.baseIng>=0&&state.baseIng<=54&&Number.isFinite(state.baseSkill)&&state.baseSkill>=0&&state.baseSkill<=54;
+ return !!p&&Number.isFinite(state.fieldBonus)&&state.fieldBonus>=0&&state.fieldBonus<=100&&Number.isFinite(state.cookMultiplier)&&state.cookMultiplier>=0&&state.cookMultiplier<=20&&[4,6].includes(state.collectionHours)&&SleepLab.validLevel(state.level)&&Number.isInteger(state.mainLevel)&&state.mainLevel>=1&&state.mainLevel<p.amounts.length&&p.slots[0].some(f=>f.id===state.food1)&&p.slots[1].some(f=>f.id===state.food2)&&p.slots[2].some(f=>f.id===state.food3)&&Number.isInteger(state.nature)&&state.nature>=0&&state.nature<25&&[state.sub0,state.sub1,state.sub2,state.sub3].every(x=>Number.isInteger(x)&&x>=-1&&x<17)&&availableMetrics().includes(state.metric)&&Number.isFinite(state.baseTime)&&state.baseTime>=1&&state.baseTime<=100000&&Number.isFinite(state.baseIng)&&state.baseIng>=0&&state.baseIng<=54&&Number.isFinite(state.baseSkill)&&state.baseSkill>=0&&state.baseSkill<=54;
 }
 if(!validState())state={...SleepLab.defaults};
 if(current().specialty==='berry')state.metric='energy';
@@ -516,23 +529,27 @@ for(const id of ['cancelNature','closeNature'])$(id).addEventListener('click',()
 $('confirmNature').addEventListener('click',()=>{state.nature=pendingNature;$('nature').value=state.nature;syncNatureTrigger();$('natureDialog').close();update();});
 function syncInputs(){for(const key of Object.keys(SleepLab.defaults)){const el=$(key);if(!el)continue;if(el.type==='checkbox')el.checked=state[key];else el.value=state[key];}syncUnlocks();syncNatureTrigger();}
 function syncUnlocks(){
+ $('levelPreset').value=[25,30,60,70].includes(state.level)?state.level:'';
+ $('sub0').disabled=state.level<10;
+ $('sub1').disabled=state.level<25;
  $('sub2').disabled=state.level<50;
  $('sub3').disabled=state.level<70;
  $('food2').disabled=state.level<30;
  $('food3').disabled=state.level<60;
  document.querySelectorAll('.food-choice').forEach(button=>{const slot=Number(button.dataset.slot);button.disabled=slot>SleepLab.countFoodSlots(state.level);const active=button.dataset.food===state['food'+slot];button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
- $('unlockNote').textContent=state.level<30?'Lv.25：第1食材のみ / サブスキル2枠で計算':state.level<60?'Lv.30：第2食材まで / サブスキル2枠で計算':state.level<70?'Lv.60：第3食材まで / サブスキル3枠で計算':'Lv.70：第3食材まで / サブスキル4枠で計算';
+ $('unlockNote').textContent='Lv.'+state.level+'：食材'+SleepLab.countFoodSlots(state.level)+'枠 / サブスキル'+SleepLab.countSlots(state.level)+'枠で計算';
 }
 function selectedIds(){return [state.sub0,state.sub1,state.sub2,state.sub3].slice(0,SleepLab.countSlots(state.level));}
 function keyFor(r){return `${r.natureId}|${r.ids.filter(x=>x>=0).sort((a,b)=>a-b).join(',')}`;}
 function update(){
  const start=performance.now();$('csv').disabled=true;syncUnlocks();
+ if(!SleepLab.validLevel(state.level)){$('error').textContent='レベルは1〜70の整数で入力してください。';return;}
  const ids=selectedIds(),actual=ids.filter(x=>x>=0);
  if(new Set(actual).size!==actual.length){$('error').textContent='同じサブスキルは1つだけ選択できます。直前の有効な結果を表示中です。';return;}
  for(const id of ['baseTime','baseIng','baseSkill'])if(!$(id).checkValidity()){$('error').textContent='基礎データを入力範囲内の数値で指定してください。直前の有効な結果を表示中です。';return;}
  if(!validState()){$('error').textContent='入力値を確認してください。';return;}
  $('error').textContent='';$('csv').disabled=false;
- const ckey=JSON.stringify([state.pokemon,state.level,state.collectionHours,state.berryFavorite,state.fieldBonus,state.cookMultiplier,state.mainLevel,state.food1,state.food2,state.food3,state.baseTime,state.baseIng,state.baseSkill]);
+ const ckey=JSON.stringify([state.pokemon,state.level,state.skillEvent,state.collectionHours,state.berryFavorite,state.fieldBonus,state.cookMultiplier,state.mainLevel,state.food1,state.food2,state.food3,state.baseTime,state.baseIng,state.baseSkill]);
  if(ckey!==cacheKey){allRows=SleepLab.population(state);cacheKey=ckey;}
  const p=current(),selected=SleepLab.calculate(state,state.nature,ids),s=SleepLab.stats(allRows,selected,state.metric),n=SleepLab.natures[state.nature];
  $('selectedSpecialty').textContent=specialtyNames[p.specialty]+'とくい';
@@ -589,6 +606,11 @@ for(const button of document.querySelectorAll('.rank-metric'))button.addEventLis
  document.querySelector('.selection').scrollIntoView({block:'nearest'});
 });
 function selectRow(row){if($('error').textContent)return;state.nature=row.natureId;row.ids.forEach((id,i)=>state['sub'+i]=id);syncInputs();update();document.querySelector('.selection').scrollIntoView({behavior:'smooth',block:'nearest'});}
+$('levelPreset').addEventListener('change',()=>{
+ if(!$('levelPreset').value)return;
+ $('level').value=$('levelPreset').value;
+ $('level').dispatchEvent(new Event('change',{bubbles:true}));
+});
 for(const key of Object.keys(SleepLab.defaults)){
  const el=$(key);if(!el)continue;
  el.addEventListener('change',()=>{
@@ -603,8 +625,8 @@ for(const key of Object.keys(SleepLab.defaults)){
 $('reset').addEventListener('click',()=>{state={...SleepLab.defaults};rebuildSpeciesInputs();syncInputs();update();});
 function csvText(){
  const p=current(),slots=SleepLab.foodSlots(state),foodIds=Object.keys(SleepLab.foods);
- const lines=[['ポケモン','回収間隔h','所持上限','得意','Lv','第1食材','第2食材','第3食材','基礎スキルLv','基準秒','基礎食材確率%','基礎スキル確率%','げんき','時間倍率','評価軸','全体順位','母集団数','性格','サブ1','サブ2','サブ3','サブ4','メインスキル','有効スキルLv',...foodIds.map(id=>SleepLab.foods[id].name+'/日'),'通常食材/日','きのみ/日','スキル回数/日','スキル食材基本分/日','食材合計/日','鍋拡張枠/日','総エナジー/日','きのみエナジー/日','食材エナジー/日','スキルエナジー/日（バースト含む）','バーストエナジー/日','好物一致','フィールド補正%','食材換算倍率','効果計算範囲','データ状態','同値代表数']];
- for(const r of topRows)lines.push([p.name,state.collectionHours,r.capacity,specialtyNames[p.specialty],state.level,...[0,1,2].map(i=>slots[i]?foodLabel(slots[i]):'未解放'),state.mainLevel,state.baseTime,state.baseIng,state.baseSkill,80,.52,metrics[state.metric],r.rank,allRows.length,SleepLab.natures[r.natureId].name,...[0,1,2,3].map(i=>r.ids[i]===undefined?'未解放':SleepLab.subs[r.ids[i]].name),p.skillName,r.effectiveLevel,...foodIds.map(id=>r[id]),r.direct,r.berries,r.skill,r.random,r.total,r.pot,r.energy,r.berryEnergy,r.ingredientEnergy,r.skillEnergy,r.burstEnergy,state.berryFavorite,state.fieldBonus,state.cookMultiplier,p.effectNote,p.provisional?'暫定パラメータ':'公開データの推定値',r.groupCount||1]);
+ const lines=[['ポケモン','回収間隔h','所持上限','得意','Lv','第1食材','第2食材','第3食材','基礎スキルLv','基準秒','基礎食材確率%','基礎スキル確率%','スキル発動回数補正','げんき','時間倍率','評価軸','全体順位','母集団数','性格','サブ1','サブ2','サブ3','サブ4','メインスキル','有効スキルLv',...foodIds.map(id=>SleepLab.foods[id].name+'/日'),'通常食材/日','きのみ/日','スキル回数/日','スキル食材基本分/日','食材合計/日','鍋拡張枠/日','総エナジー/日','きのみエナジー/日','食材エナジー/日','スキルエナジー/日（バースト含む）','バーストエナジー/日','好物一致','フィールド補正%','食材換算倍率','効果計算範囲','データ状態','同値代表数']];
+ for(const r of topRows)lines.push([p.name,state.collectionHours,r.capacity,specialtyNames[p.specialty],state.level,...[0,1,2].map(i=>slots[i]?foodLabel(slots[i]):'未解放'),state.mainLevel,state.baseTime,state.baseIng,state.baseSkill,state.skillEvent?1.25:1,80,.52,metrics[state.metric],r.rank,allRows.length,SleepLab.natures[r.natureId].name,...[0,1,2,3].map(i=>r.ids[i]===undefined?'未解放':SleepLab.subs[r.ids[i]].name),p.skillName,r.effectiveLevel,...foodIds.map(id=>r[id]),r.direct,r.berries,r.skill,r.random,r.total,r.pot,r.energy,r.berryEnergy,r.ingredientEnergy,r.skillEnergy,r.burstEnergy,state.berryFavorite,state.fieldBonus,state.cookMultiplier,p.effectNote,p.provisional?'暫定パラメータ':'公開データの推定値',r.groupCount||1]);
  return '\ufeff'+lines.map(row=>row.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\r\n');
 }
 $('csv').addEventListener('click',()=>{
@@ -940,7 +962,7 @@ $('applyEvolution').addEventListener('click',()=>{if(pendingEvolutionImport){con
 let comparison={A:null,B:null};
 function validComparison(c){
  const p=SleepLab.species[c?.pokemon];
- return p&&[25,30,60,70].includes(c.level)&&[4,6].includes(c.collectionHours)&&Number.isInteger(c.nature)&&c.nature>=0&&c.nature<25&&[c.sub0,c.sub1,c.sub2,c.sub3??-1].every(id=>Number.isInteger(id)&&id>=-1&&id<17)&&['food1','food2','food3'].every((key,i)=>p.slots[i].some(f=>f.id===c[key]))&&[c.baseTime,c.baseIng,c.baseSkill,c.mainLevel,c.fieldBonus,c.cookMultiplier].every(Number.isFinite)&&c.baseTime>0&&c.baseTime<=100000&&c.baseIng>=0&&c.baseIng<=54&&c.baseSkill>=0&&c.baseSkill<=54&&c.mainLevel>=1&&c.mainLevel<p.amounts.length&&c.fieldBonus>=0&&c.fieldBonus<=100&&c.cookMultiplier>=0&&c.cookMultiplier<=20;
+ return p&&SleepLab.validLevel(c.level)&&[4,6].includes(c.collectionHours)&&Number.isInteger(c.nature)&&c.nature>=0&&c.nature<25&&[c.sub0,c.sub1,c.sub2,c.sub3??-1].every(id=>Number.isInteger(id)&&id>=-1&&id<17)&&['food1','food2','food3'].every((key,i)=>p.slots[i].some(f=>f.id===c[key]))&&[c.baseTime,c.baseIng,c.baseSkill,c.mainLevel,c.fieldBonus,c.cookMultiplier].every(Number.isFinite)&&c.baseTime>0&&c.baseTime<=100000&&c.baseIng>=0&&c.baseIng<=54&&c.baseSkill>=0&&c.baseSkill<=54&&c.mainLevel>=1&&c.mainLevel<p.amounts.length&&c.fieldBonus>=0&&c.fieldBonus<=100&&c.cookMultiplier>=0&&c.cookMultiplier<=20;
 }
 try{const saved=JSON.parse(localStorage.getItem('sleep-lab-comparison-v1'));for(const slot of ['A','B'])if(validComparison(saved?.[slot]))comparison[slot]={sub3:-1,...saved[slot]};}catch{}
 function saveComparison(){try{localStorage.setItem('sleep-lab-comparison-v1',JSON.stringify(comparison));}catch{}}
@@ -955,7 +977,7 @@ function renderComparison(){
   const name=document.createElement('strong');name.textContent=slot+'：'+p.name+' Lv.'+c.level;profile.append(img,name);box.append(profile);
   const summary=document.createElement('p');summary.className='help';summary.textContent=SleepLab.natures[c.nature].name+' / '+[c.sub0,c.sub1,c.sub2,c.sub3??-1].slice(0,SleepLab.countSlots(c.level)).map(id=>id<0?'なし':SleepLab.subs[id].short).join('・');box.append(summary);
   const foods=document.createElement('p');foods.className='help';foods.textContent=SleepLab.foodSlots(c).map(foodLabel).join(' / ');box.append(foods);
-  const conditions=document.createElement('p');conditions.className='help';conditions.textContent='回収'+c.collectionHours+'時間 / 所持'+results[slot].capacity+'個 / フィールド+'+c.fieldBonus+'% / 食材×'+c.cookMultiplier;box.append(conditions);
+  const conditions=document.createElement('p');conditions.className='help';conditions.textContent='回収'+c.collectionHours+'時間 / 所持'+results[slot].capacity+'個 / フィールド+'+c.fieldBonus+'% / 食材×'+c.cookMultiplier+' / スキル発動×'+(c.skillEvent?1.25:1);box.append(conditions);
   const label=document.createElement('label');label.className='check';const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=c.berryFavorite;checkbox.setAttribute('aria-label',slot+'のカビゴン好物きのみ一致');checkbox.addEventListener('change',()=>{comparison[slot].berryFavorite=checkbox.checked;saveComparison();renderComparison();});label.append(checkbox,document.createTextNode('カビゴンの好物きのみ（2倍）'));box.append(label);
   const load=document.createElement('button');load.type='button';load.className='button';load.textContent=slot+'を入力欄で編集';load.addEventListener('click',()=>{state={...c};$('pokemonSearch').value='';rebuildSpeciesInputs();syncInputs();update();$('openNature').focus();});box.append(load);
  }
@@ -964,7 +986,7 @@ function renderComparison(){
  const rows=[['総エナジー','energy',0],['きのみエナジー','berryEnergy',0],['食材エナジー','ingredientEnergy',0],['スキルエナジー','skillEnergy',0],['通常収集の食材数','direct',1],['スキル由来の食材数','random',1],['食材数の合計','total',1],['通常きのみ数','berries',1],['スキル発動回数','skill',2],...ids.map(id=>[SleepLab.foods[id].name,id,1])];
  for(const [label,key,digits] of rows){const tr=document.createElement('tr');const title=document.createElement('th');title.scope='row';title.textContent=label;tr.append(title);for(const slot of ['A','B']){const td=document.createElement('td');td.textContent=results[slot]?results[slot][key].toLocaleString('ja-JP',{minimumFractionDigits:digits,maximumFractionDigits:digits}):'—';tr.append(td);}const diff=document.createElement('td');if(results.A&&results.B){const value=results.A[key]-results.B[key];diff.textContent=(value>0?'+':'')+value.toLocaleString('ja-JP',{minimumFractionDigits:digits,maximumFractionDigits:digits});diff.className=value>0?'positive':value<0?'negative':'';}else diff.textContent='—';tr.append(diff);body.append(tr);}
  const both=comparison.A&&comparison.B;
- $('compareNotice').textContent=both?(['level','collectionHours','fieldBonus','cookMultiplier'].some(key=>comparison.A[key]!==comparison.B[key])?'比較条件に違いがあります。各カードのレベル・回収間隔・換算条件をご確認ください。':'レベル・回収間隔・フィールド・食材換算倍率は同じ条件です。'):'AとBを登録すると差を表示します。';
+ $('compareNotice').textContent=both?(['level','collectionHours','fieldBonus','cookMultiplier','skillEvent'].some(key=>(comparison.A[key]??false)!==(comparison.B[key]??false))?'比較条件に違いがあります。各カードのレベル・回収間隔・換算条件をご確認ください。':'レベル・回収間隔・換算条件は同じです。'):'AとBを登録すると差を表示します。';
 }
 for(const slot of ['A','B'])$('saveCompare'+slot).addEventListener('click',()=>{if($('error').textContent){$('compareNotice').textContent='入力エラーを修正してから登録してください。';return;}comparison[slot]={...state};saveComparison();renderComparison();});
 $('clearCompare').addEventListener('click',()=>{comparison={A:null,B:null};saveComparison();renderComparison();});
@@ -1985,7 +2007,7 @@ async function identifyPortrait(canvas,lines){
  let anchor;
  function open(select){
   if(select.disabled||select.multiple||dialog.open)return;
-  anchor=select;
+  anchor=select.nextElementSibling;
   const label=select.labels?.[0]?.textContent||select.getAttribute('aria-label')||'選択肢';
   dialog.setAttribute('aria-label',label);
   const title=document.createElement('strong');title.textContent=label;
@@ -2010,19 +2032,37 @@ async function identifyPortrait(canvas,lines){
   const selected=choices.querySelector('[aria-current]');
   if(selected){selected.focus({preventScroll:true});choices.scrollTop=selected.offsetTop-choices.offsetTop;}
  }
- document.addEventListener('pointerdown',event=>{
-  const select=event.target.closest('select');
-  if(!mobile.matches||!select||select.disabled||select.multiple||event.button!==0)return;
-  event.preventDefault();open(select);
- },true);
- document.addEventListener('click',event=>{
-  const select=event.target.closest('select');
-  if(!mobile.matches||!select||select.disabled||select.multiple)return;
-  event.preventDefault();open(select);
- },true);
- document.addEventListener('keydown',event=>{
-  if(!mobile.matches||!event.target.matches('select:not([multiple])')||!['Enter',' ','ArrowDown'].includes(event.key))return;
-  event.preventDefault();open(event.target);
+ const selectors='select:not([multiple])';
+ function enhance(select){
+  if(!select.isConnected||select.parentElement.classList.contains('compact-select-control'))return;
+  const wrapper=document.createElement('span');
+  wrapper.className='compact-select-control';
+  const trigger=document.createElement('button');
+  trigger.type='button';trigger.className='compact-select-trigger';
+  trigger.setAttribute('aria-haspopup','dialog');
+  const label=select.labels?.[0]?.textContent||select.getAttribute('aria-label')||'選択肢';
+  trigger.setAttribute('aria-label',label);
+  trigger.addEventListener('click',()=>open(select));
+  select.before(wrapper);wrapper.append(select,trigger);
+  function sync(){
+   select.inert=mobile.matches;
+   trigger.disabled=select.disabled;
+  }
+  sync();
+  new MutationObserver(sync).observe(select,{attributes:true,attributeFilter:['disabled']});
+ }
+ function enhanceWithin(node){
+  if(node.nodeType!==Node.ELEMENT_NODE)return;
+  if(node.matches(selectors))enhance(node);
+  node.querySelectorAll(selectors).forEach(enhance);
+ }
+ enhanceWithin(document.body);
+ new MutationObserver(records=>{
+  for(const record of records)record.addedNodes.forEach(enhanceWithin);
+ }).observe(document.body,{childList:true,subtree:true});
+ mobile.addEventListener('change',()=>{
+  document.querySelectorAll('.compact-select-control select').forEach(select=>{select.inert=mobile.matches;});
+  if(!mobile.matches&&dialog.open)dialog.close();
  });
  dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
  dialog.addEventListener('close',()=>{if(anchor?.isConnected)anchor.focus({preventScroll:true});});
